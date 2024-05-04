@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# TypeScript
+*.tsbuildinfo
+dist/
+
+# Editor directories and files
+.vscode/
+*.swp
+*.swo
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Rollup
+.rollup.cache/

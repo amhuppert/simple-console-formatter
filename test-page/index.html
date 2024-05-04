@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>simple-console-formatter</title>
+  </head>
+  <body>
+    <p>Test in devtools...</p>
+    <script type="module">
+      import * as F from "./index.js";
+
+      window.module = F;
+      window.Colors = F.Colors;
+      window.Formatter = F.Formatter;
+      window.f = F.Formatter();
+      window.act = (curr) => {
+        console.log(curr.getConsoleArgs());
+        curr.log();
+      };
+      window.tests = {
+        indent: F.Formatter()
+          .line("Line 1 - increasing indent")
+          .indent()
+          .line("Line 2 - increasing indent")
+          .indent()
+          .line("Line 3 - no change")
+          .line("Line 4 - decreasing indent")
+          .unindent()
+          .line("Line 5 - decreasing indent")
+          .unindent()
+          .line("Line 6 - decreasing indent")
+          .unindent()
+          .line("Line 7"),
+        colorChanges: F.Formatter()
+          .text("initial ")
+          .addStyle({ color: F.Colors.yellow })
+          .text("yellow ")
+          .addStyle({ color: F.Colors.blue })
+          .text("blue ")
+          .addStyle({ color: F.Colors.green })
+          .text("green")
+          .text(" (now removing) ")
+          .removeLastStyle()
+          .text("blue ")
+          .removeLastStyle()
+          .text("yellow ")
+          .removeLastStyle()
+          .text("initial"),
+        styleMerging: F.Formatter()
+          .addStyle({ color: F.Colors.blueGreen })
+          .text("colored text... ")
+          .addStyle({ fontWeight: 900 })
+          .text("bold colored text... ")
+          .removeLastStyle()
+          .text(
+            "now we've just removed the bold but the color did not get lost"
+          ),
+        clearStyles: F.Formatter()
+          .text("inital style... ")
+          .addStyle({ color: F.Colors.blue })
+          .addStyle({ fontWeight: 900 })
+          .text("bold blue... ")
+          .addStyle({ color: F.Colors.pink })
+          .text("set one more style... ")
+          .clearStyles()
+          .text("called clearStyles"),
+        fontSize: F.Formatter()
+          .text("inital ")
+          .addStyle({ fontSize: "1.5rem" })
+          .text("1.5rem ")
+          .addStyle({ fontSize: "3rem" })
+          .text("3rem ")
+          .removeLastStyle()
+          .text("removeLastStyle called ")
+          .removeLastStyle()
+          .text("removeLastStyle called "),
+      };
+
+      const elem = document.createElement("div");
+      elem.innerText = "Added `Formatter` global function.";
+      document.body.appendChild(elem);
+    </script>
+  </body>
+</html>

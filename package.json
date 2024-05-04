@@ -1,0 +1,44 @@
+{
+  "name": "simple-console-formatter",
+  "version": "0.0.1",
+  "description": "Utils for formatting and styling console.log() messages",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist && rollup --config rollup.config.ts --configPlugin typescript && rimraf dist/rollup.config.d.ts && cp dist/esm/index.js test-page",
+    "serve": "npx http-server ./test-page"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amhuppert/simple-console-formatter.git"
+  },
+  "keywords": [
+    "console.log",
+    "logging",
+    "browser"
+  ],
+  "author": "Alex Huppert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amhuppert/simple-console-formatter/issues"
+  },
+  "homepage": "https://github.com/amhuppert/simple-console-formatter#readme",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-scale-chromatic": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.17.2",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-sizes": "^1.0.6",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "d3-scale": "^4.0.2",
+    "d3-scale-chromatic": "^3.1.0"
+  }
+}
