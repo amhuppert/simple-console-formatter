@@ -6,6 +6,12 @@
   </head>
   <body>
     <p>Test in devtools...</p>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"
+      integrity="sha512-zInFF17qBFVvvvFpIfeBzo7Tj7+rQxLeTJDmbxjBz5/zIr89YVbTNelNhdTT+/DCrxoVzBeUPVFJsczKbB7sew=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script type="module">
       import * as F from "./index.js";
 
@@ -74,7 +80,48 @@
           .text("removeLastStyle called ")
           .removeLastStyle()
           .text("removeLastStyle called "),
+        enclose: F.Formatter({
+          defaultStyles: {
+            defaultDelimiter: { color: F.Colors.blueGreen },
+            "[": { color: F.Colors.pink },
+          },
+        })
+          .enclose(
+            (s) =>
+              s.enclose(
+                (s) => s.style("text", { fontWeight: 900, color: "white" }),
+                "'",
+                "'"
+              ),
+            "[",
+            "]"
+          )
+          .newline(),
+        simpleColor: F.Formatter()
+          .text("initial ")
+          .colored("red", F.Colors.red)
+          .text(" ... ")
+          .colored("blue", F.Colors.blue)
+          .text(" ... ")
+          .colored("green", F.Colors.green),
       };
+
+      window.printColor = (c) => {
+        F.Formatter()
+          .style(c.hex(), { color: c.hex() })
+          .newline()
+          .indent()
+          .line(`alpha: ${c.alpha()}`)
+          .line(`luminance: ${c.luminance()}`)
+          .log();
+      };
+
+      console.log("Printing tests...\n");
+
+      Object.entries(window.tests).forEach(([key, value], i) => {
+        console.log(`\n\nTest #${i + 1}: ${key}\n`);
+        value.log();
+      });
 
       const elem = document.createElement("div");
       elem.innerText = "Added `Formatter` global function.";

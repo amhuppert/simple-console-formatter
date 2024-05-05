@@ -1,3 +1,3 @@
 export * from "./formatter";
 
-export { Colors } from "./colors";
+export { Colors, darkModeTextColors } from "./colors";

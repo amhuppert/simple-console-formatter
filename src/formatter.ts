@@ -1,9 +1,3 @@
-// import { schemeSet3 } from "d3-scale-chromatic";
-// import * as d3 from "d3-scale";
-import { omitUndefined } from "./utils";
-
-// const COLORS = d3.scaleOrdinal().range(schemeSet3);
-
 export type CSSGlobals = "inherit" | "initial" | "unset";
 
 export type StyleRule = {
@@ -18,7 +12,7 @@ export type FormatterType = {
   line(s: string): FormatterType;
   newline(numNewlines?: number): FormatterType;
   enclose(
-    s: string,
+    s: string | ((s: FormatterType) => void),
     open: string,
     close?: string,
     space?: boolean
@@ -32,8 +26,10 @@ export type FormatterType = {
   addStyle(style: StyleRule | undefined): FormatterType;
   clearStyles(): FormatterType;
   removeLastStyle(): FormatterType;
+  style(s: string, style: StyleRule): FormatterType;
 
   // --- More styling ---
+  colored(s: string, color: string): FormatterType;
 
   // --- Run the formatter
   getConsoleArgs(): string[];
@@ -62,7 +58,6 @@ const DEFAULT_FORMATTER_CONFIG = {
 const STYLE_DIRECTIVE = "%c";
 
 export function Formatter(config?: Partial<FormatterConfig>): FormatterType {
-  const receivedDefault = config?.defaultStyles?.default;
   const defaultDelimiter = config?.defaultStyles?.defaultDelimiter;
   const { indentSize, defaultStyles }: FormatterConfig = {
     indentSize: config?.indentSize ?? DEFAULT_FORMATTER_CONFIG.indentSize,
@@ -150,7 +145,13 @@ export function Formatter(config?: Partial<FormatterConfig>): FormatterType {
 
       return self;
     },
-    enclose: (s: string, open: string, close?: string, space = false) => {
+    style: (s, style) => {
+      return self.addStyle(style).text(s).removeLastStyle();
+    },
+    colored: (s, color) => {
+      return self.style(s, { color });
+    },
+    enclose: (s, open, close, space = false) => {
       close = close ?? open;
       const delimStyle =
         (defaultStyles as Record<string, StyleRule | undefined>)[open] ??
@@ -162,7 +163,11 @@ export function Formatter(config?: Partial<FormatterConfig>): FormatterType {
       self.addStyle(delimStyle).text(open);
       maybeRemoveLastStyle();
       maybeAddSpace();
-      self.text(s);
+      if (typeof s === "function") {
+        s(self);
+      } else {
+        self.text(s);
+      }
       maybeAddSpace();
       self.addStyle(delimStyle).text(close);
       return maybeRemoveLastStyle();
